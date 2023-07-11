@@ -1,0 +1,46 @@
+<?php //0032d
+// Investorm © 2023, Copyright by Softnio. Investorm v1.4.0 is required to install this module.
+if(extension_loaded('ionCube Loader')){die('The file '.__FILE__." is corrupted.\n");}echo("\nScript error: the ".(($cli=(php_sapi_name()=='cli')) ?'ionCube':'<a href="https://www.ioncube.com">ionCube</a>')." Loader for PHP needs to be installed.\n\nThe ionCube Loader is the industry standard PHP extension for running protected PHP code,\nand can usually be added easily to a PHP installation.\n\nFor Loaders please visit".($cli?":\n\nhttps://get-loader.ioncube.com\n\nFor":' <a href="https://get-loader.ioncube.com">get-loader.ioncube.com</a> and for')." an instructional video please see".($cli?":\n\nhttp://ioncu.be/LV\n\n":' <a href="http://ioncu.be/LV">http://ioncu.be/LV</a> ')."\n\n");exit(199);
+?>
+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
