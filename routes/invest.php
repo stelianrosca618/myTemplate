@@ -30,8 +30,11 @@ Route::name('admin.investment.')->middleware(['admin'])->prefix('admin/investmen
 
     // Schemes
     Route::get('/schemes/{status?}', 'Admin\InvestmentSchemeController@schemeList')->name('schemes');
+    Route::get('/schemes/{type?}', 'Admin\InvestmentSchemeController@variableSchemeList')->name('variableschemes');
     Route::get('/scheme/{action?}', 'Admin\InvestmentSchemeController@actionScheme')->name('scheme.action');
     Route::post('/scheme/save', 'Admin\NewSchemeController@saveScheme')->name('scheme.save');
+    Route::post('/scheme/savevariable', 'Admin\NewSchemeController@saveVariableScheme')->name('scheme.savevariable');
+    
     Route::post('/scheme/update/{id?}', 'Admin\InvestmentSchemeController@updateScheme')->name('scheme.update');
     Route::post('/scheme/status', 'Admin\InvestmentSchemeController@updateSchemeStatus')->name('scheme.status');
 });

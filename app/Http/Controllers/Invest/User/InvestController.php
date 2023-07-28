@@ -184,7 +184,7 @@ class InvestController extends Controller
         $subscription = $request->session()->get('invest_details');
         $plan = IvScheme::find(data_get($subscription, 'scheme_id'));
         $revalidate = false;
-
+        dd($subscription);
         if (empty($subscription)) {
             $revalidate = true;
         }
@@ -258,6 +258,28 @@ class InvestController extends Controller
 
             return response()->json(['msg' => __('Investment cancelled successfully!')]);
         }, $invest);
+    }
+
+    public function stopInvestment($id, Request $request){
+     $invest = IvInvest::loggedUser()->where('id', get_hash($id))
+            ->first();
+
+        if (blank($invest)) {
+            throw ValidationException::withMessages(['id' => __('Sorry unable to cancel investment!')]);
+        }
+
+        return $this->wrapInTransaction(function ($invest) {
+            $this->investment->cancelSubscription($invest);
+
+            try {
+                ProcessEmail::dispatch('investment-cancel-user-customer', data_get($invest, 'user'), null, $invest);
+                ProcessEmail::dispatch('investment-cancel-user-admin', data_get($invest, 'user'), null, $invest);
+            } catch (\Exception $e) {
+                save_mailer_log($e, 'investment-cancel-user-customer');
+            }
+
+            return response()->json(['msg' => __('Investment cancelled successfully!')]);
+        }, $invest);   
     }
 
     private function getID($uid)

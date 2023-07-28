@@ -31,10 +31,6 @@
                             <a href="javascript:void(0)" class="btn btn-primary d-none d-sm-inline-flex actn-scivs" data-action="scheme" data-view="modal"><em class="icon ni ni-plus"></em><span>{{ __('Add Scheme') }}</span></a>
                             <a href="javascript:void(0)" class="btn btn-icon btn-primary d-inline-flex d-sm-none actn-scivs" data-action="scheme" data-view="modal"><em class="icon ni ni-plus"></em></a>
                         </li>
-                        <li>
-                            <a href="javascript:void(0)" class="btn btn-primary d-none d-sm-inline-flex actn-scivs" data-action="scheme" data-view="modal"><em class="icon ni ni-plus"></em><span>{{ __('Add Variable Scheme') }}</span></a>
-                            <a href="javascript:void(0)" class="btn btn-icon btn-primary d-inline-flex d-sm-none actn-scivs" data-action="scheme" data-view="modal"><em class="icon ni ni-plus"></em></a>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -53,7 +49,6 @@
         <div class="nk-block" id="axcon-ivs">
             @include('investment.admin.schemes.cards', $schemes)
         </div>
-        
     </div>
 @endsection
 

@@ -112,6 +112,11 @@
                                 <a href="{{ route('admin.investment.schemes') }}" class="nk-menu-link"><span class="nk-menu-text">{{ __('Manage Schemes') }}</span></a>
                             </li>
                             @endif
+                            @if(has_route('admin.investment.schemes'))
+                            <li class="nk-menu-item{{ (is_route('admin.investment.schemes')) ? ' active' : '' }}">
+                                <a href="{{ route('admin.investment.schemes') }}" class="nk-menu-link"><span class="nk-menu-text">{{ __('Manage Variable Schemes') }}</span></a>
+                            </li>
+                            @endif
                             @if(has_route('admin.investment.advanced.schemes'))
                             <li class="nk-menu-item{{ (is_route('admin.investment.advanced.schemes')) ? ' active' : '' }}">
                                 <a href="{{ route('admin.investment.advanced.schemes') }}" class="nk-menu-link"><span class="nk-menu-text">{{ __('Advanced Schemes') }}</span></a>

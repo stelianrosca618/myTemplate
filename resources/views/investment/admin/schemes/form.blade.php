@@ -10,19 +10,28 @@
 
     if ($type=='new' && has_route('admin.investment.scheme.save')) {
         $form_action = route('admin.investment.scheme.save');
+    }else if($type=='newvariable'){
+        $form_action = route('admin.investment.scheme.savevariable');
     } else {
         $form_action = route('admin.investment.scheme.update', ['id' => $uid]);
         $metas = $scheme->meta();
     }
 
-    $restrict = data_get($scheme,'is_restricted') ? 'disabled' : '' ;
+    $restrict = data_get($scheme,'is_restricted') ? $type!='editvariable' ? 'disabled' : '' : '' ;
 @endphp
 
 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
         <a href="#" class="close" data-dismiss="modal"><em class="icon ni ni-cross-sm"></em></a>
         <div class="modal-body modal-body-md">
+          
+          @if($type=='newvariable')
+            <h5 class="title nk-modal-title">{{ __('New Variable Scheme / Plan') }}</h5>
+          @elseif($type=='editvariable')
+            <h5 class="title nk-modal-title">{{ __('Edit Variable Scheme / Plan') }}</h5>
+          @else
             <h5 class="title nk-modal-title">{{ __(':Type Scheme / Plan', ['type' => __($type)]) }}</h5>
+          @endif
             <form action="{{ $form_action }}" class="form-validate is-alter"{!! ($type!='new') ? ' data-confirm="update"' : '' !!}>
                 <div class="row gy-2">
                     <div class="col-md-8">
@@ -74,6 +83,33 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
+                      @if($type=='newvariable')
+                        <div class="form-group">
+                              <label class="form-label" for="interest-rate">{{ __('Profit A Day') }}</label>
+                            <div class="row gy-2">
+                                <div class="col-12">
+                                    <div class="form-control-wrap">
+                                        <input name="rate" type="text" class="form-control" id="interest-rate" value="{{ data_get($scheme, 'rate') }}" required {{$restrict}}>
+                                    </div>
+                                    <div class="form-note">{{ __('Amount') }}</div>
+                                  <input  name="types" type="hidden" value="percent" {{$restrict}} />
+                                </div>
+                            </div>
+                        </div>
+                      @elseif($type=='editvariable')
+                        <div class="form-group">
+                              <label class="form-label" for="interest-rate">{{ __('Profit A Day') }}</label>
+                            <div class="row gy-2">
+                                <div class="col-12">
+                                    <div class="form-control-wrap">
+                                        <input name="rate" type="text" class="form-control" id="interest-rate" value="{{ data_get($scheme, 'rate') }}" required {{$restrict}}>
+                                    </div>
+                                    <div class="form-note">{{ __('Amount') }}</div>
+                                  <input  name="types" type="hidden" value="percent" {{$restrict}} />
+                                </div>
+                            </div>
+                        </div>
+                      @else
                         <div class="form-group">
                             <label class="form-label" for="interest-rate">{{ __('Interest Rate / Profit') }}</label>
                             <div class="row gy-2">
@@ -95,6 +131,7 @@
                                 </div>
                             </div>
                         </div>
+                      @endif
                     </div>
                     <div class="col-6 col-lg-3">
                         <label class="form-label" for="interest-period">{{ __('Interest Period') }}</label>
@@ -118,6 +155,7 @@
                             </div>
                         </div>
                     </div>
+                  @if($type != 'newvariable' && $type != 'editvariable')
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-label" for="term-duration">{{ __('Term Duration') }}</label>
@@ -135,6 +173,7 @@
                             </div>
                         </div>
                     </div>
+                  @endif
                 </div>
 
                 <div class="divider md mb-3 stretched"></div>
@@ -189,7 +228,7 @@
                                 </div>
                             </div>
                         </div>
-                        @if($type!='new')
+                        
                         <div class="notes mt-4">
                             <ul>
                                 <li class="alert-note is-plain text-info">
@@ -197,19 +236,23 @@
                                     <p>{{ __('Your changes does not affect on old subscription as only affect to new subscription.') }}</p>
                                 </li>
                                 @if($restrict)
+                                
                                 <li class="alert-note is-plain text-danger">
                                     <em class="icon ni ni-alert"></em>
                                     <p>{{ __('You cannot edit the scheme as someone already invested on this plan.') }}</p>
                                 </li>
+                                
                                 @else
-                                <li class="alert-note is-plain text-danger">
-                                    <em class="icon ni ni-alert"></em>
-                                    <p>{{ __('If someone invested on this plan then you cannot update the scheme anymore.') }}</p>
-                                </li>
+                                  @if($type != 'editvariable')
+                                  <li class="alert-note is-plain text-danger">
+                                      <em class="icon ni ni-alert"></em>
+                                      <p>{{ __('If someone invested on this plan then you cannot update the scheme anymore.') }}</p>
+                                  </li>
+                                  @endif
                                 @endif
                             </ul>
                         </div>
-                        @endif
+                        
                     </div>
                 </div>
                 <div class="divider md stretched"></div>

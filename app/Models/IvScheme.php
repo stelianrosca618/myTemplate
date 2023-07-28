@@ -198,6 +198,7 @@ class IvScheme extends Model
         $amount = BigDecimal::of((float)data_get($this, 'amount'));
         $term = data_get($this, 'term');
         $profit = $rate->multipliedBy($calcUnit * $term);
+
         $scale = is_crypto($currency) ? dp_calc('crypto') : dp_calc('fiat');
 
         if (data_get($this, 'rate_type') === InterestRateType::FIXED) {

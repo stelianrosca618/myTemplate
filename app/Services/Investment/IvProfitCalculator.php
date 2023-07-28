@@ -118,7 +118,7 @@ class IvProfitCalculator
         if ($profitCount == $this->invest->term_total) {
             return;
         }
-
+        dd($this->invest->scheme);
         if ($profitCount < $this->invest->term_total) {
             $lastProfitEntry = $this->lastProfitEntry();
             $interval = InvestormService::INTERVALS[data_get($this->invest, 'term_calc', data_get($this->invest, 'scheme.calc_period'))] ?? null;

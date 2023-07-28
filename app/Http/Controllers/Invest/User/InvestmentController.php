@@ -82,7 +82,7 @@ class InvestmentController extends Controller
 
         $investChart = $graph->getDays($investment, 31)->flatten();
 
-
+        save_error_log('profit-calc');
         return view("investment.user.dashboard", compact('investments', 'recents', 'amounts', 'profitChart', 'investChart'));
     }
 

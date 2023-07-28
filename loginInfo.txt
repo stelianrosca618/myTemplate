@@ -1,0 +1,15 @@
+
+admin info
+app.nashfunds.com 
+user: dev@dev.com
+pass: Dev123
+
+user info
+user@user.com
+User123
+
+Server Info
+https://nashfunds.com:8090
+Panel username: admin
+Panel password: 1234567
+3:32

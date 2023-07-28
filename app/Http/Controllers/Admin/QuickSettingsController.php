@@ -135,6 +135,7 @@ class QuickSettingsController extends Controller
                 $this->quickRevoke();
                 session()->put('system_revoke', true);
                 return response()->json([ 'msg' => __('Application status successfully revoked.'), 'timeout' => 900, 'url' => route('admin.quick.register')]);
+              //  return redirect()->route('admin.dashboard');
             } else {
                 throw ValidationException::withMessages(['invalid' => __('Sorry, unable to perform the action.')]);
             }

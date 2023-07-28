@@ -59,6 +59,15 @@ class InvestormService extends Service
         $this->ivProcessor = new IvInvestmentProcessor();
     }
 
+    public function updateInvestByScheme($scheme){
+        $investments = IvInvest::Where('scheme_id', $scheme->id);
+        foreach($investments in $invest){
+            $invest->rate = $scheme->rate.'('.ucfirst($scheme->rate_type).')';
+            $invest->scheme = $scheme->array();
+            $invest->save();
+        }
+    }
+
     public function processSubscriptionDetails($input, $ivScheme, $investAmount): array
     {
         $investmentProcessor = new IvSubscription();
@@ -83,9 +92,12 @@ class InvestormService extends Service
     public function processInvestmentProfit(IvInvest $invest)
     {
         if ($invest->status == InvestmentStatus::ACTIVE) {
-            $transactionProcessor = new IvProfitCalculator();
-            $transactionProcessor->setInvest($invest)
-                ->calculateProfit();
+            dd($invest->type)
+            if($invest->type != 'variable'){
+                $transactionProcessor = new IvProfitCalculator();
+                $transactionProcessor->setInvest($invest)
+                    ->calculateProfit();    
+            }
         }
     }
 
@@ -94,6 +106,11 @@ class InvestormService extends Service
         return $this->ivProcessor->cancelInvestment($invest);
     }
 
+    public function cancelVariableInvestment(IvInvest $invest){
+
+        return $this->ivProcessor->cancelRunningInvest($invest);
+    }
+  
     public function proceedPayout($user_id, $profits, $entry = null)
     {
         $payoutProcess = new IvPayoutProcess();

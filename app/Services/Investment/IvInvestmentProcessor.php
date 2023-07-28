@@ -177,6 +177,11 @@ class IvInvestmentProcessor
         $ledger->save();
 
         $termStart = CarbonImmutable::now();
+        if(data_get($invest, 'scheme.type') == 'variable'){
+            
+            $termStart = CarbonImmutable::now('Europe/London');
+            $termStart->setTime(21, 32, 5)
+        }
         $termTenure = sprintf("%s %s", data_get($invest, 'scheme.term'), ucfirst(data_get($invest, 'scheme.term_type')));
         $termEnd = $termStart->add($termTenure)->addMinutes(1)->addSeconds(5);
 
@@ -216,6 +221,45 @@ class IvInvestmentProcessor
 
         $this->saveIvAction(ActionType::STATUS_CANCEL, "invest", $invest->id);
 
+        return $invest->fresh();
+    }
+
+    public function stopVariableInvestment(IvInvest $invest)
+    {
+        $refundAmount = $invest->amount;
+        $data = [
+            'ivx' => generate_unique_ivx(IvLedger::class, 'ivx'),
+            'user_id' => $invest->user_id,
+            'type' => LedgerTnxType::CAPITAL,
+            'calc' => TransactionCalcType::NONE,
+            'amount' => $refundAmount,
+            'fees' => 0.00,
+            'total' => to_sum($refundAmount, 0.00),
+            'currency' => $invest->currency,
+            'desc' => "Returned investment after cancelled",
+            'note' => "Stopped Variable Investment",
+            'remarks' => "Stopped Variable Investment",
+            'invest_id' => $invest->id,
+            'reference' => $invest->ivx,
+            'source' => AccType('invest'),
+            'created_at' => Carbon::now(),
+        ];
+
+        $ledger = new IvLedger();
+        $ledger->fill($data);
+        $ledger->save();
+
+        $investWallet = get_user_account($invest->user_id, AccType('invest'));
+        $investWallet->amount = BigDecimal::of($investWallet->amount)->plus($refundAmount);
+        $investWallet->save();
+
+        $invest->status = InvestmentStatus::CANCELLED;
+        $invest->remarks = ($remarks) ? "New: ".$remarks ."\n\n". "Old:" .$invest->remarks : $invest->remarks;
+        $invest->note = ($note) ? "New: ".$note ."\n\n". "Old:" .$invest->note : $invest->note;
+        $invest->save();
+
+        $this->saveIvAction(ActionType::REFUND, "invest", $invest->id);
+        $this->saveIvAction(ActionType::STATUS_CANCEL, "invest", $invest->id);
         return $invest->fresh();
     }
 

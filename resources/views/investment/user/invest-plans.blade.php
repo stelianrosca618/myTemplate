@@ -28,7 +28,7 @@ $leadTitle = gss('iv_plan_pg_title', "Choose your favourite plan and start earni
     <div class="nk-ivp-apps">
         <div class="nk-ivp-plans row g-gs scheme-container justify-center">
             @foreach($plans as $ivp)
-            @if (is_null(data_get($ivp, 'type')))
+           
             <div class="col-md-6 col-lg-4">
                 <div class="nk-ivp-card card card-bordered card-full">
                     <div class="card-inner-group">
@@ -41,6 +41,7 @@ $leadTitle = gss('iv_plan_pg_title', "Choose your favourite plan and start earni
                             </div>
                             <div class="nk-ivp-summary card-text">
                                 <div class="row">
+                                  @if(data_get($ivp, 'type') != 'variable')
                                     <div class="col-6">
                                         <span class="lead-text"><span class="small text-dark">{{ data_get($ivp, 'rate_text') }}</span></span>
                                         <span class="sub-text">{{ __(':period Interest', [ 'period' => __(ucfirst(data_get($ivp, 'calc_period')))]) }}</span>
@@ -49,6 +50,12 @@ $leadTitle = gss('iv_plan_pg_title', "Choose your favourite plan and start earni
                                         <span class="lead-text"><span class="small text-dark">{{ data_get($ivp, 'term') }}</span></span>
                                         <span class="sub-text">{{ __('Term :type', ['type' => __(ucfirst(data_get($ivp, 'term_type')))]) }}</span>
                                     </div>
+                                  @else
+                                    <div class="col-12">
+                                        <span class="lead-text"><span class="small text-dark">{{ data_get($ivp, 'rate_text') }}</span></span>
+                                        <span class="sub-text">{{ __(':period Interest', [ 'period' => __(ucfirst(data_get($ivp, 'calc_period')))]) }}</span>
+                                    </div>
+                                  @endif
                                 </div>
                             </div>
                         </div>
@@ -62,11 +69,18 @@ $leadTitle = gss('iv_plan_pg_title', "Choose your favourite plan and start earni
                                     <li><span class="label">{{ __('Min Deposit') }}</span> - <span class="data fw-medium text-dark">{{ money(data_get($ivp, 'amount'), $currency) }}</span></li>
                                     <li><span class="label">{{ __('Max Deposit') }}</span> - <span class="data">{{ data_get($ivp, 'maximum') ? money(data_get($ivp, 'maximum'), $currency) : __("Unlimited") }}</span></li>
                                     @endif
-                                    @if(sys_settings('iv_plan_terms_show') == 'yes')
-                                    <li><span class="label">{{ __('Term Duration') }}</span> - <span class="data">{{ data_get($ivp, 'term_text_alter') }}</span></li>
+                                  
+                                    @if(data_get($ivp, 'type') != 'variable')
+                                      @if(sys_settings('iv_plan_terms_show') == 'yes')
+                                      <li><span class="label">{{ __('Term Duration') }}</span> - <span class="data">{{ data_get($ivp, 'term_text_alter') }}</span></li>
+                                      @endif
                                     @endif
                                     @if(sys_settings('iv_plan_payout_show') == 'yes')
-                                    <li><span class="label">{{ __('Payout Term') }}</span> - <span class="data">{{ data_get($ivp, 'payout') == 'after_matured' ? __("After matured") : __("Term basis") }}</span></li>
+                                      @if(data_get($ivp, 'type') != 'variable')
+                                          <li><span class="label">{{ __('Payout Term') }}</span> - <span class="data">{{ __(Every 24 hours) }}</span></li>
+                                      @else
+                                          <li><span class="label">{{ __('Payout Term') }}</span> - <span class="data">{{ data_get($ivp, 'payout') == 'after_matured' ? __("After matured") : __("Term basis") }}</span></li>
+                                      @endif
                                     @endif
                                     @if(sys_settings('iv_plan_capital_show') == 'yes')
                                     <li><span class="label">{{ __('Capital Return') }} <em class="icon ni ni-info text-soft nk-tooltip small" title="{{ __("The invested amount will be return at the end of term.") }}"></em></span> - <span class="data">@if(data_get($ivp, 'capital')) {{ __('End of Term') }} @else {{ __('Each Term') }} @endif</span></li>
@@ -83,11 +97,7 @@ $leadTitle = gss('iv_plan_pg_title', "Choose your favourite plan and start earni
                     </div>
                 </div>
             </div>
-            @else
-                @if (view()->exists('ExtInvest::user.plan-card'))
-                    @include('ExtInvest::user.plan-card')
-                @endif
-            @endif
+           
             @endforeach
         </div>
     </div>
