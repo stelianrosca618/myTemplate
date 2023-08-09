@@ -1330,6 +1330,19 @@ if (!function_exists('amount_format')) {
     }
 }
 
+if(!function_exists('sum_amount')){
+    /**
+     * @param $num, $currency, $round
+     * @return string
+     * @version 1.0.0
+     * @since 1.0
+     */
+    function sum_amount($amount1, $amount2){
+
+        return $amount1) + $amount2;
+    }
+}
+
 if (!function_exists('to_amount')) {
     /**
      * @param $num, $currency, $round
@@ -3570,6 +3583,7 @@ if (!function_exists('user_profit')) {
 
         if ($duration == 'weekly') {
             $start = [ Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()  ];
+            dd($start);
             $end = [ Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek() ];
         } elseif ($duration=='monthly') {
             $start = [ Carbon::now()->subMonth()->startOfMonth(), Carbon::now()->subMonth()->endOfMonth() ];

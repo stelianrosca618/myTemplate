@@ -47,6 +47,12 @@ class InvestmentController extends Controller
         ])->where('user_id', $user_id)
             ->orderBy('id', 'desc')->get()->groupBy('status');
 
+        /*foreach($investments as $invest){
+            $this->profitCalculate($invest);    
+        };*/
+
+        
+
         $recents = IvInvest::where('user_id', $user_id)->where('status', InvestmentStatus::COMPLETED)->latest()->limit(3)->get();
         $actived = IvInvest::where('user_id', $user_id)->where('status', InvestmentStatus::ACTIVE)->get();
 
@@ -57,11 +63,14 @@ class InvestmentController extends Controller
 
         $invested = IvInvest::where('user_id', $user_id)->where('status', InvestmentStatus::ACTIVE);
         $pending = IvInvest::where('user_id', $user_id)->where('status', InvestmentStatus::PENDING);
-        $profits = IvProfit::where('user_id', $user_id)->whereNull('payout');
-
+        $lockedprofits = IvProfit::where('user_id', $user_id)->whereNull('payout');
+        //$able_profits = IvProfit::where('user_id', $user_id)->whereNull('payout');
+        $profits = IvProfit::where('user_id', $user_id)->whereNull('payout')->whereHas('invest', function($q) {
+            $q->where('scheme.is_fixed', 0);
+        })->get();
         $amounts['invested'] = $invested->sum('amount');
         $amounts['profit'] = $invested->sum('profit');
-        $amounts['locked'] = to_sum($profits->sum('amount'), $pending->sum('amount'));
+        $amounts['locked'] = to_sum($lockedprofits->sum('amount'), $pending->sum('amount'));
 
         // Graph chart
         $graph->set('profit', 'term_start');
